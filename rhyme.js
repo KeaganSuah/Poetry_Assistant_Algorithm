@@ -1,71 +1,7 @@
-const testingWord = [
-  "Mask",
-  "Flask",
-  "Task",
-  "Bask",
-  "About",
-  "Throughout",
-  "Drought",
-  "Without",
-  "Scout",
-  "Doubt",
-  "Sprout",
-  "Above",
-  "Glove",
-  "Dove",
-  "Love",
-  "Across",
-  "Loss",
-  "Cross",
-  "Toss",
-  "Add",
-  "Glad",
-  "Sad",
-  "Mad",
-  "Lad",
-  "Dad",
-  "Bad",
-  "Had",
-  "Age",
-  "Stage",
-  "Wage",
-  "Engage",
-  "Sage",
-  "Cage",
-  "Air",
-  "Chair",
-  "Hair",
-  "Care",
-  "Share",
-  "Fair",
-  "Rare",
-  "Chair",
-  "Repair",
-  "Art",
-  "Part",
-  "Start",
-  "Apart",
-  "Chart",
-  "Heart",
-  "Cart",
-  "Depart",
-  "Boy",
-  "Joy",
-  "Toy",
-  "Enjoy",
-  "Destroy",
-  "Employ",
-  "Bag",
-  "Flag",
-  "Tag",
-  "Swag",
-  "Baby",
-  "Maybe",
-];
-
 const vowels = ["a", "e", "i", "o", "u"];
 
-var inputWord = "sport";
+// dog cat lake happy cloud
+var inputWord = "cloud";
 
 var rhymeWords = [];
 
@@ -98,11 +34,55 @@ function checkRhyme(stack1, stack2) {
   }
 }
 
+// Vowel checker
+// Output the common vowel and support word
+function syllableCheck(stack) {
+  var vowelWord = null;
+  var supportWord = null;
+  for (var i = 0; i < stack.length; i++) {
+    if (vowelWord == null || supportWord == null) {
+      if (vowels.includes(stack[i]) && i != 0) {
+        var previous = stack[i + 1];
+        var next = stack[i - 1];
+        if (!vowels.includes(next)) {
+          supportWord = next;
+        }
+        if (!vowels.includes(previous)) {
+          vowelWord = stack[i];
+        }
+      }
+    } else {
+      var syllableArray = [vowelWord, supportWord];
+      return syllableArray;
+    }
+  }
+  return false;
+}
+
+function checkMatchingStack(stack1, stack2) {
+  for (var i = 0; i < stack1.length; i++) {
+    if (stack1[i] != stack2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function assossanceRhyme(word1, word2) {
+  var stack1 = wordToStack(word1);
+  var stack2 = wordToStack(word2);
+  if (checkMatchingStack(syllableCheck(stack1), syllableCheck(stack2))) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const fs = require("fs");
 
 // Read the file
 // "commonWords.txt"  "wordlist.txt"
-fs.readFile("commonWords.txt", "utf8", (err, data) => {
+fs.readFile("wordlist.txt", "utf8", (err, data) => {
   if (err) {
     console.error("Error reading file:", err);
     return;
@@ -119,6 +99,7 @@ fs.readFile("commonWords.txt", "utf8", (err, data) => {
     wordInlist = wordToStack(word);
     // sameWordcheck(inputStack, wordInlist)
     // checkRhyme(inputStack, wordInlist)
+    // assossanceRhyme(inputWord,word)
     if (checkRhyme(inputStack, wordInlist)) {
       rhymeWords.push(word);
     }
@@ -127,26 +108,6 @@ fs.readFile("commonWords.txt", "utf8", (err, data) => {
 
   console.log("word is " + inputWord, sortByStringLength(rhymeWords));
 });
-
-// Assossance algorithm
-function sameWordcheck(stack1, stack2) {
-  var current1 = stack1;
-  for (let i = 0; i < stack1.length; i++) {
-    var archive = stack2.slice();
-    var current2 = stack2;
-    for (let j = 0; j < stack2.length; j++) {
-      if (current1[0] == current2[0]) {
-        if (checkRhyme(current1, current2)) {
-          return true;
-        }
-      }
-      current2.shift();
-    }
-    stack2 = archive.slice();
-    current1.shift();
-  }
-  return false;
-}
 
 // Sorting Algorithm
 function sortByStringLength(stringArray) {
@@ -164,6 +125,26 @@ function compareByLength(a, b) {
 }
 
 // TESTING
+
+// // Assossance algorithm
+// function sameWordcheck(stack1, stack2) {
+//   var current1 = stack1;
+//   for (let i = 0; i < stack1.length; i++) {
+//     var archive = stack2.slice();
+//     var current2 = stack2;
+//     for (let j = 0; j < stack2.length; j++) {
+//       if (current1[0] == current2[0]) {
+//         if (checkRhyme(current1, current2)) {
+//           return true;
+//         }
+//       }
+//       current2.shift();
+//     }
+//     stack2 = archive.slice();
+//     current1.shift();
+//   }
+//   return false;
+// }
 
 // sameWordcheck(inputStack, wordInlist)
 
