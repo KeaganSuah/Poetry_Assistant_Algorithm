@@ -139,7 +139,7 @@ function poetAssistant() {
         console.log("Thank you and have fun making poems!");
         readline.close();
       } else if (word.length >= 3 && /^[a-zA-Z]+$/.test(word)) {
-        getRhymeWords("commonWords.txt", word);
+        getRhymeWords("wordList.txt", word);
       } else {
         if (word.length < 3) {
           console.log(
