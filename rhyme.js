@@ -1,9 +1,19 @@
+const fs = require("fs");
+
+function readTextFile(fileName, callback) {
+  fs.readFile(fileName, "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading file:", err);
+      return callback(err, null);
+    }
+
+    // Split the data into individual words
+    const words = data.trim().split("\n");
+    callback(null, words);
+  });
+}
+
 const vowels = ["a", "e", "i", "o", "u"];
-
-// dog cat lake happy cloud
-var inputWord = "cloud";
-
-var rhymeWords = [];
 
 function wordToStack(word) {
   var stack = [];
@@ -14,8 +24,10 @@ function wordToStack(word) {
 }
 
 // Tail checker algorithm
-function checkRhyme(stack1, stack2) {
+function tailRhyme(word1, word2) {
   var common = [];
+  var stack1 = wordToStack(word1);
+  var stack2 = wordToStack(word2);
   for (let i = 0; i < stack1.length; i++) {
     if (stack1[i] == stack2[i]) {
       common.push(stack1[i]);
@@ -78,36 +90,70 @@ function assossanceRhyme(word1, word2) {
   }
 }
 
-const fs = require("fs");
-
-// Read the file
-// "commonWords.txt"  "wordlist.txt"
-fs.readFile("wordlist.txt", "utf8", (err, data) => {
-  if (err) {
-    console.error("Error reading file:", err);
-    return;
-  }
-
-  inputStack = wordToStack(inputWord);
-  var archiveCurrent1 = inputStack.slice();
-
-  // Split the data into individual words
-  const words = data.trim().split("\n");
-
+function generateRhyme(userInput, wordList, algorithm) {
+  var output = [];
   // Loop through each word
-  for (const word of words) {
-    wordInlist = wordToStack(word);
-    // sameWordcheck(inputStack, wordInlist)
-    // checkRhyme(inputStack, wordInlist)
-    // assossanceRhyme(inputWord,word)
-    if (checkRhyme(inputStack, wordInlist)) {
-      rhymeWords.push(word);
+  for (const comparingWord of wordList) {
+    if (algorithm(userInput, comparingWord)) {
+      output.push(comparingWord);
     }
-    inputStack = archiveCurrent1.slice();
   }
+  return output;
+}
 
-  console.log("word is " + inputWord, sortByStringLength(rhymeWords));
+function getRhymeWords(fileName, userInput) {
+  readTextFile(fileName, (err, array) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+
+    console.log(`Words that Rhyme with ${userInput} are...`);
+    console.log("Using Tail Rhyme");
+    console.log(sortByStringLength(generateRhyme(userInput, array, tailRhyme)));
+    console.log("Using Assonance (Vowel Rhyme)");
+    console.log(
+      sortByStringLength(generateRhyme(userInput, array, assossanceRhyme))
+    );
+    poetAssistant();
+  });
+}
+
+const readline = require("readline").createInterface({
+  input: process.stdin,
+  output: process.stdout,
 });
+
+function poetAssistant() {
+  readline.question(
+    "Enter your word and find a list of rhyming words, or (type 'exit' to quit): ",
+    (word) => {
+      if (word.toLowerCase() == "exit") {
+        console.log("Thank you and have fun making poems!");
+        readline.close();
+      } else if (word.length >= 3 && /^[a-zA-Z]+$/.test(word)) {
+        // tailRhyme(inputStack, wordInlist)
+        // assossanceRhyme(inputWord,word)
+        // best algorithm so far
+        getRhymeWords("commonWords.txt", word);
+      } else {
+        if (word.length < 3) {
+          console.log(
+            "Invalid input. Make sure the word is equal or more than 3 letters long."
+          );
+        } else if (/^[a-zA-Z]+$/.test(word)) {
+          console.log(
+            "Invalid input. Make sure the word contains only English letters."
+          );
+        }
+        poetAssistant();
+      }
+    }
+  );
+}
+
+console.log("Hi!, I am your Poet assistant.");
+poetAssistant();
 
 // Sorting Algorithm
 function sortByStringLength(stringArray) {
@@ -126,7 +172,7 @@ function compareByLength(a, b) {
 
 // TESTING
 
-// // Assossance algorithm
+// Assossance algorithm
 // function sameWordcheck(stack1, stack2) {
 //   var current1 = stack1;
 //   for (let i = 0; i < stack1.length; i++) {
@@ -134,7 +180,7 @@ function compareByLength(a, b) {
 //     var current2 = stack2;
 //     for (let j = 0; j < stack2.length; j++) {
 //       if (current1[0] == current2[0]) {
-//         if (checkRhyme(current1, current2)) {
+//         if (tailRhyme(current1, current2)) {
 //           return true;
 //         }
 //       }
@@ -153,7 +199,7 @@ function compareByLength(a, b) {
 //     var archiveCurrent1 = inputStack.slice();
 //     for (var i = 0; i < array.length; i++) {
 //       wordInlist = wordToStack(array[i]);
-//       if (checkRhyme(inputStack, wordInlist)) {
+//       if (tailRhyme(inputStack, wordInlist)) {
 //         rhymeWords.push(array[i]);
 //       }
 //       inputStack = archiveCurrent1.slice();
