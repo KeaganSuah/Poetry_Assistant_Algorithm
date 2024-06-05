@@ -35,8 +35,9 @@ function tailRhyme(word1, word2) {
       break;
     }
   }
+
   if (
-    common.length >= stack1.length * 0.6 &&
+    common.length >= word1.length * 0.6 &&
     vowels.includes(stack1[common.length]) ==
       vowels.includes(stack2[common.length])
   ) {
@@ -48,32 +49,34 @@ function tailRhyme(word1, word2) {
 
 // Vowel checker
 // Output the common vowel and support word
-function syllableCheck(stack) {
+function syllableCheck(array) {
+  var startWord = null;
   var vowelWord = null;
   var supportWord = null;
-  for (var i = 0; i < stack.length; i++) {
+  for (var i = 0; i < array.length; i++) {
     if (vowelWord == null || supportWord == null) {
-      if (vowels.includes(stack[i]) && i != 0) {
-        var previous = stack[i + 1];
-        var next = stack[i - 1];
+      if (vowels.includes(array[i]) && i != 0) {
+        var previous = array[i + 1];
+        var next = array[i - 1];
         if (!vowels.includes(next)) {
           supportWord = next;
         }
         if (!vowels.includes(previous)) {
-          vowelWord = stack[i];
+          vowelWord = array[i];
+          startWord = previous;
         }
       }
     } else {
-      var syllableArray = [vowelWord, supportWord];
+      var syllableArray = [startWord, vowelWord, supportWord];
       return syllableArray;
     }
   }
   return false;
 }
 
-function checkMatchingStack(stack1, stack2) {
-  for (var i = 0; i < stack1.length; i++) {
-    if (stack1[i] != stack2[i]) {
+function checkMatchingStack(array1, array2) {
+  for (var i = 0; i < array1.length; i++) {
+    if (array1[i] != array2[i]) {
       return false;
     }
   }
@@ -83,7 +86,11 @@ function checkMatchingStack(stack1, stack2) {
 function assossanceRhyme(word1, word2) {
   var stack1 = wordToStack(word1);
   var stack2 = wordToStack(word2);
-  if (checkMatchingStack(syllableCheck(stack1), syllableCheck(stack2))) {
+
+  if (
+    stack2.length >= 3 &&
+    checkMatchingStack(syllableCheck(stack1), syllableCheck(stack2))
+  ) {
     return true;
   } else {
     return false;
@@ -132,9 +139,6 @@ function poetAssistant() {
         console.log("Thank you and have fun making poems!");
         readline.close();
       } else if (word.length >= 3 && /^[a-zA-Z]+$/.test(word)) {
-        // tailRhyme(inputStack, wordInlist)
-        // assossanceRhyme(inputWord,word)
-        // best algorithm so far
         getRhymeWords("commonWords.txt", word);
       } else {
         if (word.length < 3) {
@@ -169,42 +173,3 @@ function compareByLength(a, b) {
     return 0;
   }
 }
-
-// TESTING
-
-// Assossance algorithm
-// function sameWordcheck(stack1, stack2) {
-//   var current1 = stack1;
-//   for (let i = 0; i < stack1.length; i++) {
-//     var archive = stack2.slice();
-//     var current2 = stack2;
-//     for (let j = 0; j < stack2.length; j++) {
-//       if (current1[0] == current2[0]) {
-//         if (tailRhyme(current1, current2)) {
-//           return true;
-//         }
-//       }
-//       current2.shift();
-//     }
-//     stack2 = archive.slice();
-//     current1.shift();
-//   }
-//   return false;
-// }
-
-// sameWordcheck(inputStack, wordInlist)
-
-// function findRhymeWords(array) {
-//     inputStack = wordToStack(inputWord);
-//     var archiveCurrent1 = inputStack.slice();
-//     for (var i = 0; i < array.length; i++) {
-//       wordInlist = wordToStack(array[i]);
-//       if (tailRhyme(inputStack, wordInlist)) {
-//         rhymeWords.push(array[i]);
-//       }
-//       inputStack = archiveCurrent1.slice();
-//     }
-//   }
-
-// findRhymeWords(testingWord)
-// console.log("word is " + inputWord, sortByStringLength(rhymeWords));
