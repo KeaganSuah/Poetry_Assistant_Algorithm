@@ -119,6 +119,15 @@ function reverseArray(word) {
   return array;
 }
 
+// Convert from word to array
+function convertArray(word) {
+  var array = [];
+  for (let i = 0; i < word.length; i++) {
+    array.push(word[i]);
+  }
+  return array;
+}
+
 function GenerateCommonWords(word1, word2) {
   var commonStack = new Stack();
   var stack1 = wordToStack(word1);
@@ -136,7 +145,7 @@ function GenerateCommonWords(word1, word2) {
 }
 
 // Tail checker algorithm
-function tailRhyme(word1, word2) {
+function masculineAlgorithm(word1, word2) {
   const commonStack = GenerateCommonWords(word1, word2);
   if (
     commonStack.getSize() >= word1.length * 0.6 &&
@@ -149,31 +158,6 @@ function tailRhyme(word1, word2) {
   }
 }
 
-// function syllableCheck(array) {
-//   var startWord = null;
-//   var vowelWord = null;
-//   var supportWord = null;
-//   for (var i = 0; i < array.length; i++) {
-//     if (vowelWord == null || supportWord == null) {
-//       var previous = array[i + 1];
-//       var next = array[i - 1];
-//       if (letterInVowel(array[i]) && i != 0) {
-//         if (!letterInVowel(next)) {
-//           supportWord = next;
-//         }
-//         if (!letterInVowel(previous)) {
-//           vowelWord = array[i];
-//           startWord = previous;
-//         }
-//       }
-//     } else {
-//       var syllableArray = [startWord, vowelWord, supportWord];
-//       return syllableArray;
-//     }
-//   }
-//   return false;
-// }
-
 function syllableCheck(array) {
   var startWord = null;
   var vowelWord = null;
@@ -181,13 +165,17 @@ function syllableCheck(array) {
   for (var i = 0; i < array.length; i++) {
     var previous = array[i + 1];
     var next = array[i - 1];
-    if (!letterInVowel(next) && (vowelWord == null || supportWord == null)) {
-      if (letterInVowel(array[i]) && i != 0) {
-        supportWord = next;
-        if (!letterInVowel(previous)) {
-          vowelWord = array[i];
-          startWord = previous;
+    if (vowelWord == null || supportWord == null) {
+      if (!letterInVowel(next)) {
+        if (letterInVowel(array[i]) && i != 0) {
+          supportWord = next;
+          if (!letterInVowel(previous)) {
+            vowelWord = array[i];
+            startWord = previous;
+          }
         }
+      } else {
+        continue;
       }
     } else {
       var syllableArray = [startWord, vowelWord, supportWord];
@@ -197,7 +185,8 @@ function syllableCheck(array) {
   return false;
 }
 
-function checkMatchingStack(array1, array2) {
+// Only if in psuedocode, stack cannot be compared to stacks
+function matchingArray(array1, array2) {
   for (let i = 0; i < array2.length; i++) {
     if (letterInVowel(array2[i]) && i != 0) {
       if (array2[i] == array1[1]) {
@@ -214,75 +203,17 @@ function checkMatchingStack(array1, array2) {
   return false;
 }
 
-function assossanceRhyme(word1, word2) {
+function assossanceAlgorithm(word1, word2) {
   var array1 = reverseArray(word1);
-  if (word2.length >= 3 && checkMatchingStack(syllableCheck(array1), word2)) {
+  var array2 = convertArray(word2);
+  if (word2.length >= 3 && matchingArray(syllableCheck(array1), array2)) {
     return true;
   } else {
     return false;
   }
 }
 
-// console.log(assossanceRhyme("test", "intestine"));
-
-// Vowel checker
-// Output the common vowel and support word
-// syllableArray stack
-
-// function syllableCheck(stack) {
-//   var syllableStack = new Stack();
-//   while (!stack.isEmpty()) {
-//     // the rule is the surrounding the first and last must be support
-//     if (letterInVowel(stack.peak())) {
-//       if (syllableStack.getSize() >= 1) {
-//         syllableStack.push(stack.peak());
-//       }
-//     } else {
-//       if (syllableStack.isEmpty() || letterInVowel(syllableStack.peak())) {
-//         syllableStack.push(stack.peak());
-//       } else if (
-//         syllableStack.getSize() >= 3 &&
-//         !letterInVowel(syllableStack.peak())
-//       ) {
-//         break;
-//       } else {
-//         syllableStack.pop();
-//         syllableStack.push(stack.peak());
-//       }
-//     }
-//     stack.pop();
-//   }
-//   return syllableStack;
-// }
-
-// array is stack, loop through and remove
-// function checkMatchingStack(array1, array2) {
-//   if (array1.getSize() == array2.getSize()) {
-//     while (!array1.isEmpty()) {
-//       if (array1.peak() != array2.peak()) {
-//         return false;
-//       }
-//       array1.pop();
-//       array2.pop();
-//     }
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
-
-// function assossanceRhyme(word1, word2) {
-//   var array1 = wordToStack(word1);
-//   var array2 = wordToStack(word2);
-//   if (
-//     array2.getSize() >= 3 &&
-//     checkMatchingStack(syllableCheck(array1), syllableCheck(array2))
-//   ) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
+// console.log(assossanceAlgorithm("lime", "climb"));
 
 function getRhymeWords(fileName, userInput) {
   readTextFile(fileName, (err, array) => {
@@ -294,9 +225,9 @@ function getRhymeWords(fileName, userInput) {
     var tailEnd = new LinkedList();
     var assonance = new LinkedList();
     for (const comparingWord of array) {
-      if (tailRhyme(userInput, comparingWord)) {
+      if (masculineAlgorithm(userInput, comparingWord)) {
         tailEnd.add(comparingWord);
-      } else if (assossanceRhyme(userInput, comparingWord)) {
+      } else if (assossanceAlgorithm(userInput, comparingWord)) {
         assonance.add(comparingWord);
       }
     }
@@ -340,8 +271,9 @@ const readline = require("readline").createInterface({
 });
 
 function poetAssistant() {
+  console.log('Example of Words to use, "dog", "cat", "climb", "lime","flow"');
   readline.question(
-    "Enter your word and find a list of rhyming words, or (type 'exit' to quit): ",
+    "Enter your word to find rhyming words, or (type 'exit' to quit): ",
     (word) => {
       if (word.toLowerCase() == "exit") {
         console.log("Thank you and have fun making poems!");
@@ -366,3 +298,86 @@ function poetAssistant() {
 
 console.log("Hi!, I am your Poet assistant.");
 poetAssistant();
+
+// Old syllable check
+// function syllableCheck(array) {
+//   var startWord = null;
+//   var vowelWord = null;
+//   var supportWord = null;
+//   for (var i = 0; i < array.length; i++) {
+//     if (vowelWord == null || supportWord == null) {
+//       var previous = array[i + 1];
+//       var next = array[i - 1];
+//       if (letterInVowel(array[i]) && i != 0) {
+//         if (!letterInVowel(next)) {
+//           supportWord = next;
+//         }
+//         if (!letterInVowel(previous)) {
+//           vowelWord = array[i];
+//           startWord = previous;
+//         }
+//       }
+//     } else {
+//       var syllableArray = [startWord, vowelWord, supportWord];
+//       return syllableArray;
+//     }
+//   }
+//   return false;
+// }
+
+// Using Stack for assossance
+
+// function syllableCheck(stack) {
+//   var syllableStack = new Stack();
+//   while (!stack.isEmpty()) {
+//     // the rule is the surrounding the first and last must be support
+//     if (letterInVowel(stack.peak())) {
+//       if (syllableStack.getSize() >= 1) {
+//         syllableStack.push(stack.peak());
+//       }
+//     } else {
+//       if (syllableStack.isEmpty() || letterInVowel(syllableStack.peak())) {
+//         syllableStack.push(stack.peak());
+//       } else if (
+//         syllableStack.getSize() >= 3 &&
+//         !letterInVowel(syllableStack.peak())
+//       ) {
+//         break;
+//       } else {
+//         syllableStack.pop();
+//         syllableStack.push(stack.peak());
+//       }
+//     }
+//     stack.pop();
+//   }
+//   return syllableStack;
+// }
+
+// array is stack, loop through and remove
+// function matchingArray(array1, array2) {
+//   if (array1.getSize() == array2.getSize()) {
+//     while (!array1.isEmpty()) {
+//       if (array1.peak() != array2.peak()) {
+//         return false;
+//       }
+//       array1.pop();
+//       array2.pop();
+//     }
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
+
+// function assossanceAlgorithm(word1, word2) {
+//   var array1 = wordToStack(word1);
+//   var array2 = wordToStack(word2);
+//   if (
+//     array2.getSize() >= 3 &&
+//     matchingArray(syllableCheck(array1), syllableCheck(array2))
+//   ) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
