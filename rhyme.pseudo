@@ -1,0 +1,194 @@
+class Stack
+    Stack empty list
+
+    function push(stack, item):
+        add item to the top of stack
+
+    function pop(stack):
+        if stack is not empty:
+            remove and return the item at the top of stack
+        else:
+            return error or null (depending on how errors are handled in your pseudocode)
+        end if
+    
+        function isEmpty(stack):
+        return true if stack is empty, false otherwise
+
+class Node:
+    data
+    next
+
+    function createNode(value):
+        node = new Node
+        node.data = value
+        node.next = null
+        return node
+
+class LinkedList:
+    head
+
+    function insertAtBeginning(list, value):
+        newNode = createNode(value)
+        if list.head is null:
+            list.head = newNode
+        else:
+            newNode.next = list.head
+            list.head = newNode
+        end if
+
+function checkVowels(letter)
+    new Array vowels(5)
+    vowels ⟵ ["a", "e", "i", "o", "u"]
+    for 0 < i ≤ 5 do
+        if i = letter then
+            return true
+        end if
+    end for
+    return false
+end function
+
+function stackConvert(word)
+    new Stack wordStack
+    for 0 < i ≤ LENGTH[word] do
+        PUSH[word[i], wordStack]
+    end for
+    return wordStack
+end function
+
+function arrayConvert(word)
+    new Array array(LENGTH[word])
+    for 0 < i ≤ LENGTH[word] do
+        Array ⟵ word[i]
+    end for
+    return array
+end function
+
+function compareStacks(word1,word2)
+    counter ⟵ 0
+    stack1 ⟵ stackConvert(word1)
+    stack2 ⟵ stackConvert(word2)
+    while ¬EMPTY[stack1] do
+        if TOP[stack1] = TOP[stack2] then
+            counter ⟵ counter + 1
+            POP[stack1]
+            POP[stack2]
+        else
+            break
+        end if
+    end while
+end function
+
+function surpressLength(word)
+    correctLength ⟵ 0
+    if LENGTH(word) > 3 then
+        correctLength ⟵ 3
+    else
+        correctLength ⟵ LENGTH[word] * 0.6
+    end if
+    return correctLength
+end function
+
+function masculineAlgorithm(word1, word2)
+    numWords ⟵ compareStacks(word1, word2)
+    word1MidLetter ⟵ word1[LENGTH[word1] - numWords]
+    word2MidLetter ⟵ word2[LENGTH[word2] - numWords]
+    if numWords ≥ surpressLength(word1) ∧ checkVowels(word1MidLetter) = checkVowels(word2MidLetter) then
+        return TRUE
+    else
+        return FALSE
+    end if
+end function
+
+function getSyllable(array)
+    startWord ⟵ NONE
+    vowelWord ⟵ NONE
+    supportWord ⟵ NONE
+    for 0 < i ≤ LENGTH[array] do
+        if checkVowels(array[i]) ∧ i ̸= 0 then
+            vowelWord ⟵ array[i]
+            if supportWord = NONE then
+                supportWord ⟵ array[i - 1]
+            end if
+            if ¬checkVowels(next) then
+                startWord ⟵ array[i + 1]
+                break
+            end if
+        end if
+    end for
+    new Array syllableArray(3)
+    syllableArray ⟵ [startWord, vowelWord,supportWord]
+    return syllableArray
+end function
+
+function compareArray(array1, array2)
+    for 0 < i ≤ LENGTH[array2] do
+        if checkVowels(array2[i]) then
+            checkFront ⟵ array2[i-1] = array1[1]
+            checkBack ⟵ array2[i+1] = array1[3]
+            compareVowel ⟵ array2[i] = array1[2]
+            if compareVowel ∧ checkBack ∧ checkFront then
+                return TRUE
+            end if
+        end if
+    end for
+    return FALSE
+end function
+
+function assossanceAlgorithm(word1, word2)
+    array1 ⟵ reverseArray(word1)
+    array2 ⟵ arrayConvert(word2)
+    if LENGTH[word2] ≥ 5 ∧ compareArray(getSyllable(array1), array2) then
+        return TRUE
+    else
+        return FALSE
+    end if
+end function
+
+function getRhymeWords(fileName, userInput)
+    file ⟵ open(fileName)
+    new Array wordList(LENGTH(file))
+    wordList ⟵ READ(file)
+    new LinkedList masculine
+    new LinkedList assossance
+    for 0 < i ≤ LENGTH[wordList] do
+        if masculineAlgorithm(userInput, wordList[i]) then
+            insertAtEnd[wordList[i], masculineList]
+        else if masculineAlgorithm(userInput, wordList[i]) then
+            insertAtEnd[wordList[i], assossanceList]
+        end if
+    end for
+    print "Words that Rhyme with" userInput
+    newline
+    print "Using Masculine Rhyme Algorithm"
+    if ¬EMPTY[masculineList] then
+        PrintList[masculineList]
+    else
+        print "Sorry no words rhyme with" userInput
+    end if
+    print "Additional words with Assonance (Vowel Rhyme) Rhym Algorithm"
+    if ¬EMPTY[assossanceList] then
+        PrintList[assossanceList]
+    else
+        print "`No addition words rhyme with" userInput "using Assonance rhyme"
+    end if
+    poetAssistant(fileName)
+end function
+
+function poetAssistant(fileName)
+    print "Enter your word to find rhyming words, or (type 'exit' to quit): "
+    input userInput
+    if userInput = "exit" then
+        print "Thank you and have fun making poems!"
+    else if LENGTH[userInput] ≥ 3 ∧ contains only alphabetic characters then
+        getRhymeWords(fileName, userInput)
+    else
+        if contains only alphabetic characters then
+            print "Invalid input. Make sure the word contains only English letters."
+        else if LENGTH[userInput] < 3 then
+            print "Invalid input. Make sure the word is equal or more than 3 letters long."
+        end if
+    end if
+end function
+
+print "Hi!, I am your Poet assistant."
+poetAssistant("wordList.txt")

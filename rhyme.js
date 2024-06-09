@@ -41,7 +41,7 @@ class LinkedList {
   }
 
   // adds an element at the end of list
-  add(element) {
+  insertAtEnd(element) {
     // creates a new node
     let node = new Node(element);
 
@@ -83,7 +83,7 @@ class LinkedList {
   }
 }
 
-// Check if the letter in the argument is part of a vowel
+// Check if the letter in the argument is part of a vowel using linear search
 function checkVowels(letter) {
   // Declare array of vowels
   var vowels = ["a", "e", "i", "o", "u"];
@@ -144,11 +144,13 @@ function compareStacks(word1, word2) {
 
 // If the word is longer than 3 letters, it will still return the max amount of 3, else it returns 60% of the word length
 function surpressLength(word) {
+  var correctLength = 0;
   if (word.length > 3) {
-    return 3;
+    correctLength = 3;
   } else {
-    return word.length * 0.6;
+    correctLength = word.length * 0.6;
   }
+  return correctLength;
 }
 
 // Masculine rhyme algorithm, take two words and find common letters in the last syllable of both words
@@ -177,15 +179,14 @@ function getSyllable(array) {
   for (var i = 0; i < array.length; i++) {
     // To find the vowel and ignore the magic 'E' at the last letter of the word
     if (checkVowels(array[i]) && i != 0) {
-      var next = array[i + 1];
       vowelWord = array[i];
       // only get the letter behind the vowel when it hasn't been declared yet
       if (supportWord == null) {
         supportWord = array[i - 1];
       }
       // Check to see if the letter in front of the vowel if its not a vowel, this ignore double vowels word
-      if (!checkVowels(next)) {
-        startWord = next;
+      if (!checkVowels(array[i + 1])) {
+        startWord = array[i + 1];
         break;
       }
     }
@@ -194,7 +195,7 @@ function getSyllable(array) {
   return syllableArray;
 }
 
-// Compare both arrays to see if they have matching syllable sounds, by the vowel letter, and letter in front and behind of it
+// Compare both arrays to see if they have matching syllable sounds, by the vowel letter, and letter in front and behind of it, using linear search
 function compareArray(array1, array2) {
   for (let i = 0; i < array2.length; i++) {
     // check if the letter is a vowel
@@ -245,21 +246,21 @@ var readline = require("readline").createInterface({
 
 // Get the list of words from the text file and compare it with the user input
 function getRhymeWords(fileName, userInput) {
-  readTextFile(fileName, (err, array) => {
+  readTextFile(fileName, (err, wordList) => {
     if (err) {
       console.error(err);
       return;
     }
 
     // declare the linked lists for both assonance rhyme and masculine rhyme
-    var masculine = new LinkedList();
-    var assonance = new LinkedList();
+    var masculineList = new LinkedList();
+    var assossanceList = new LinkedList();
     // Loop through the list of words, and apply the two algorithms to get the words that rhymes
-    for (var comparingWord of array) {
-      if (masculineAlgorithm(userInput, comparingWord)) {
-        masculine.add(comparingWord);
-      } else if (assossanceAlgorithm(userInput, comparingWord)) {
-        assonance.add(comparingWord);
+    for (var i = 0; i < wordList.length; i++) {
+      if (masculineAlgorithm(userInput, wordList[i])) {
+        masculineList.insertAtEnd(wordList[i]);
+      } else if (assossanceAlgorithm(userInput, wordList[i])) {
+        assossanceList.insertAtEnd(wordList[i]);
       }
     }
 
@@ -267,50 +268,49 @@ function getRhymeWords(fileName, userInput) {
     console.log(
       `\nWords that Rhyme with ${userInput}\n\nUsing Masculine Rhyme Algorithm`
     );
-    if (!masculine.empty()) {
-      masculine.printList();
+    if (!masculineList.empty()) {
+      masculineList.printList();
     } else {
-      `Sorry no words rhyme with ${userInput}`;
+      console.log(`Sorry no words rhyme with ${userInput}`);
     }
     // To show user words that rhyme using assossance algorithm
     console.log(
       "Additional words with Assonance (Vowel Rhyme) Rhyme Algorithm"
     );
-    if (!assonance.empty()) {
-      assonance.printList();
+    if (!assossanceList.empty()) {
+      assossanceList.printList();
     } else {
       console.log(
         `No addition words rhyme with ${userInput} using Assonance rhyme`
       );
     }
     // To repeat asking user to continue inputting words to find rhyming words
-    poetAssistant();
+    poetAssistant(fileName);
   });
 }
 
 // The main function and start of the poetry assistance
-function poetAssistant() {
-  console.log('Example of Words to use, "dog", "cat", "climb", "lime","flow"');
+function poetAssistant(fileName) {
   // request for user input to be used to find rhymes
   readline.question(
     "Enter your word to find rhyming words, or (type 'exit' to quit): ",
-    (word) => {
+    (userInput) => {
       // user can exit by typing the word 'exit'
-      if (word.toLowerCase() == "exit") {
+      if (userInput.toLowerCase() == "exit") {
         console.log("Thank you and have fun making poems!");
         readline.close();
       }
       // if words satisfy the conditions, start putting the input word into the algorithm to start getting rhyming words
-      else if (word.length >= 3 && /^[a-zA-Z]+$/.test(word)) {
-        getRhymeWords("wordList.txt", word);
+      else if (userInput.length >= 3 && /^[a-zA-Z]+$/.test(userInput)) {
+        getRhymeWords(fileName, userInput);
       }
       // reject input words that are shorter than 3 letters or have non-alphabatical letters in them
       else {
-        if (!/^[a-zA-Z]+$/.test(word)) {
+        if (!/^[a-zA-Z]+$/.test(userInput)) {
           console.log(
             "Invalid input. Make sure the word contains only English letters."
           );
-        } else if (word.length < 3) {
+        } else if (userInput.length < 3) {
           console.log(
             "Invalid input. Make sure the word is equal or more than 3 letters long."
           );
@@ -320,8 +320,9 @@ function poetAssistant() {
   );
 }
 
+// Start the app running
 console.log("Hi!, I am your Poet assistant.");
-poetAssistant();
+poetAssistant("wordList.txt");
 
 // Old syllable check
 // function getSyllable(array) {
