@@ -1,4 +1,4 @@
-// Declare the Stack Data Structure
+//////////////////// Data Structures ////////////////////
 class Stack {
   constructor() {
     this.items = [];
@@ -83,6 +83,8 @@ class LinkedList {
   }
 }
 
+//////////////////// Vowel Function, used in both Masculine and Assonance ////////////////////
+
 // Check if the letter in the argument is part of a vowel using linear search
 function checkVowels(letter) {
   // Declare array of vowels
@@ -95,6 +97,8 @@ function checkVowels(letter) {
   return false;
 }
 
+//////////////////// Masculine Rhyme Algorithm Functions ////////////////////
+
 // Takes a string as an argument and convert it into a stack data structure
 function stackConvert(word) {
   var wordStack = new Stack();
@@ -102,24 +106,6 @@ function stackConvert(word) {
     wordStack.push(word[i]);
   }
   return wordStack;
-}
-
-// Takes a string as an argument and convert it into a array data structure
-function arrayConvert(word) {
-  var array = [];
-  for (let i = 0; i < word.length; i++) {
-    array.push(word[i]);
-  }
-  return array;
-}
-
-// Takes a string as an argument, convert and reverse it into a array data structure
-function reverseArray(word) {
-  var array = [];
-  for (let i = word.length - 1; i >= 0; i--) {
-    array.push(word[i]);
-  }
-  return array;
 }
 
 // Takes two words, convert to a stack and count the number of common words
@@ -170,6 +156,26 @@ function masculineAlgorithm(word1, word2) {
   }
 }
 
+//////////////////// Assonance Rhyme Algorithm Functions ////////////////////
+
+// Takes a string as an argument and convert it into a array data structure
+function arrayConvert(word) {
+  var array = [];
+  for (let i = 0; i < word.length; i++) {
+    array.push(word[i]);
+  }
+  return array;
+}
+
+// Takes a string as an argument, convert and reverse it into a array data structure
+function reverseArray(word) {
+  var array = [];
+  for (let i = word.length - 1; i >= 0; i--) {
+    array.push(word[i]);
+  }
+  return array;
+}
+
 // Get the vowel letter, letter before and after it in the last syllable of the input word
 function getSyllable(array) {
   var startWord = null;
@@ -212,8 +218,8 @@ function compareArray(array1, array2) {
   return false;
 }
 
-// Assossance rhyme algorithm, take last syllable and vowel letter of input word and compare it with all syllables and vowels in comparing word. As long as one syllable is the same, it rhymes.
-function assossanceAlgorithm(word1, word2) {
+// assonance rhyme algorithm, take last syllable and vowel letter of input word and compare it with all syllables and vowels in comparing word. As long as one syllable is the same, it rhymes.
+function assonanceAlgorithm(word1, word2) {
   var array1 = reverseArray(word1);
   var array2 = arrayConvert(word2);
   // words shorter than 4 letters will already be picked up by masculine rhyme, so can just ignore it.
@@ -223,6 +229,8 @@ function assossanceAlgorithm(word1, word2) {
     return false;
   }
 }
+
+//////////////////// Poet Assistance Functions ////////////////////
 
 var fs = require("fs");
 // function to node.js to read text file
@@ -254,13 +262,13 @@ function getRhymeWords(fileName, userInput) {
 
     // declare the linked lists for both assonance rhyme and masculine rhyme
     var masculineList = new LinkedList();
-    var assossanceList = new LinkedList();
+    var assonanceList = new LinkedList();
     // Loop through the list of words, and apply the two algorithms to get the words that rhymes
     for (var i = 0; i < wordList.length; i++) {
       if (masculineAlgorithm(userInput, wordList[i])) {
         masculineList.insertAtEnd(wordList[i]);
-      } else if (assossanceAlgorithm(userInput, wordList[i])) {
-        assossanceList.insertAtEnd(wordList[i]);
+      } else if (assonanceAlgorithm(userInput, wordList[i])) {
+        assonanceList.insertAtEnd(wordList[i]);
       }
     }
 
@@ -273,12 +281,12 @@ function getRhymeWords(fileName, userInput) {
     } else {
       console.log(`Sorry no words rhyme with ${userInput}`);
     }
-    // To show user words that rhyme using assossance algorithm
+    // To show user words that rhyme using assonance algorithm
     console.log(
       "Additional words with Assonance (Vowel Rhyme) Rhyme Algorithm"
     );
-    if (!assossanceList.empty()) {
-      assossanceList.printList();
+    if (!assonanceList.empty()) {
+      assonanceList.printList();
     } else {
       console.log(
         `No addition words rhyme with ${userInput} using Assonance rhyme`
@@ -323,112 +331,3 @@ function poetAssistant(fileName) {
 // Start the app running
 console.log("Hi!, I am your Poet assistant.");
 poetAssistant("wordList.txt");
-
-// Old syllable check
-// function getSyllable(array) {
-//   var startWord = null;
-//   var vowelWord = null;
-//   var supportWord = null;
-//   for (var i = 0; i < array.length; i++) {
-//     if (vowelWord == null || supportWord == null) {
-//       var previous = array[i + 1];
-//       var next = array[i - 1];
-//       if (checkVowels(array[i]) && i != 0) {
-//         if (!checkVowels(next)) {
-//           supportWord = next;
-//         }
-//         if (!checkVowels(previous)) {
-//           vowelWord = array[i];
-//           startWord = previous;
-//         }
-//       }
-//     } else {
-//       var syllableArray = [startWord, vowelWord, supportWord];
-//       return syllableArray;
-//     }
-//   }
-//   return false;
-// }
-
-// function getSyllable(array) {
-//   var startWord = null;
-//   var vowelWord = null;
-//   var supportWord = null;
-//   console.log(array);
-//   for (var i = 0; i < array.length; i++) {
-//     var previous = array[i + 1];
-//     var next = array[i - 1];
-//     if (startWord == null) {
-//       if (checkVowels(array[i]) && i != 0) {
-//         vowelWord = array[i];
-//         if (!checkVowels(next)) {
-//           supportWord = next;
-//         }
-//         if (!checkVowels(previous)) {
-//           startWord = previous;
-//         }
-//       }
-//     } else {
-//       var syllableArray = [startWord, vowelWord, supportWord];
-//       return syllableArray;
-//     }
-//   }
-//   return false;
-// }
-
-// Using Stack for assossance
-
-// function getSyllable(stack) {
-//   var syllableStack = new Stack();
-//   while (!stack.empty()) {
-//     // the rule is the surrounding the first and last must be support
-//     if (checkVowels(stack.top())) {
-//       if (syllableStack.getSize() >= 1) {
-//         syllableStack.push(stack.top());
-//       }
-//     } else {
-//       if (syllableStack.empty() || checkVowels(syllableStack.top())) {
-//         syllableStack.push(stack.top());
-//       } else if (
-//         syllableStack.getSize() >= 3 &&
-//         !checkVowels(syllableStack.top())
-//       ) {
-//         break;
-//       } else {
-//         syllableStack.pop();
-//         syllableStack.push(stack.top());
-//       }
-//     }
-//     stack.pop();
-//   }
-//   return syllableStack;
-// }
-
-// array is stack, loop through and remove
-// function compareArray(array1, array2) {
-//   if (array1.getSize() == array2.getSize()) {
-//     while (!array1.empty()) {
-//       if (array1.top() != array2.top()) {
-//         return false;
-//       }
-//       array1.pop();
-//       array2.pop();
-//     }
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
-
-// function assossanceAlgorithm(word1, word2) {
-//   var array1 = stackConvert(word1);
-//   var array2 = stackConvert(word2);
-//   if (
-//     array2.getSize() >= 3 &&
-//     compareArray(getSyllable(array1), getSyllable(array2))
-//   ) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }

@@ -134,7 +134,7 @@ function compareArray(array1, array2)
     return FALSE
 end function
 
-function assossanceAlgorithm(word1, word2)
+function assonanceAlgorithm(word1, word2)
     array1 ⟵ reverseArray(word1)
     array2 ⟵ arrayConvert(word2)
     if LENGTH[word2] ≥ 5 ∧ compareArray(getSyllable(array1), array2) then
@@ -149,12 +149,12 @@ function getRhymeWords(fileName, userInput)
     new Array wordList(LENGTH(file))
     wordList ⟵ READ(file)
     new LinkedList masculine
-    new LinkedList assossance
+    new LinkedList assonance
     for 0 < i ≤ LENGTH[wordList] do
         if masculineAlgorithm(userInput, wordList[i]) then
             insertAtEnd[wordList[i], masculineList]
-        else if masculineAlgorithm(userInput, wordList[i]) then
-            insertAtEnd[wordList[i], assossanceList]
+        else if assonanceAlgorithm(userInput, wordList[i]) then
+            insertAtEnd[wordList[i], assonanceList]
         end if
     end for
     print "Words that Rhyme with" userInput
@@ -166,8 +166,8 @@ function getRhymeWords(fileName, userInput)
         print "Sorry no words rhyme with" userInput
     end if
     print "Additional words with Assonance (Vowel Rhyme) Rhym Algorithm"
-    if ¬EMPTY[assossanceList] then
-        PrintList[assossanceList]
+    if ¬EMPTY[assonanceList] then
+        PrintList[assonanceList]
     else
         print "`No addition words rhyme with" userInput "using Assonance rhyme"
     end if
