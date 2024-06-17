@@ -109,12 +109,9 @@ function stackConvert(word) {
 }
 
 // Takes two words, convert to a stack and count the number of common words
-function compareStacks(word1, word2) {
+function compareStacks(stack1, stack2) {
   // To count the number of common words
   var counter = 0;
-  // Convert the argument words into a stack
-  var stack1 = stackConvert(word1);
-  var stack2 = stackConvert(word2);
   while (!stack1.empty()) {
     // If both stack have same "head" letters, increment the counter and remove the head
     if (stack1.top() == stack2.top()) {
@@ -130,25 +127,26 @@ function compareStacks(word1, word2) {
 
 // If the word is longer than 3 letters, it will still return the max amount of 3, else it returns 60% of the word length
 function surpressLength(word) {
-  var correctLength = 0;
+  var commonLength = 0;
   if (word.length > 3) {
-    correctLength = 3;
+    commonLength = 3;
   } else {
-    correctLength = word.length * 0.6;
+    commonLength = word.length * 0.6;
   }
-  return correctLength;
+  return commonLength;
 }
 
 // Masculine rhyme algorithm, take two words and find common letters in the last syllable of both words
 function masculineAlgorithm(word1, word2) {
+  // Convert the argument words into a stack
+  var stack1 = stackConvert(word1);
+  var stack2 = stackConvert(word2);
   // Get the counter of common letters, it satisfy if its more than the value return by surpress length
-  var numWords = compareStacks(word1, word2);
-  // Check to see if the letter before the common letters are vowels, which will be compared later, if same vowel, that means the word rhymes
-  var word1MidLetter = word1[word1.length - (numWords + 1)];
-  var word2MidLetter = word2[word2.length - (numWords + 1)];
+  var numWords = compareStacks(stack1, stack2);
+  // Check to see if the remaining letters before the common letters are vowels or contanents, if both are the same, that means the word rhymes
   if (
     numWords >= surpressLength(word1) &&
-    checkVowels(word1MidLetter) == checkVowels(word2MidLetter)
+    checkVowels(stack1.top()) == checkVowels(stack2.top())
   ) {
     return true;
   } else {
@@ -323,6 +321,7 @@ function poetAssistant(fileName) {
             "Invalid input. Make sure the word is equal or more than 3 letters long."
           );
         }
+        poetAssistant(fileName);
       }
     }
   );

@@ -12,7 +12,7 @@ class Stack
         end if
     
         function isEmpty(stack):
-        return true if stack is empty, false otherwise
+        return TRUE if stack is empty, FALSE otherwise
 
 class Node:
     data
@@ -41,10 +41,10 @@ function checkVowels(letter)
     vowels ⟵ ["a", "e", "i", "o", "u"]
     for 0 < i ≤ 5 do
         if i = letter then
-            return true
+            return TRUE
         end if
     end for
-    return false
+    return FALSE
 end function
 
 function stackConvert(word)
@@ -55,18 +55,8 @@ function stackConvert(word)
     return wordStack
 end function
 
-function arrayConvert(word)
-    new Array array(LENGTH[word])
-    for 0 < i ≤ LENGTH[word] do
-        Array ⟵ word[i]
-    end for
-    return array
-end function
-
-function compareStacks(word1,word2)
+function compareStacks(stack1,stack2)
     counter ⟵ 0
-    stack1 ⟵ stackConvert(word1)
-    stack2 ⟵ stackConvert(word2)
     while ¬EMPTY[stack1] do
         if TOP[stack1] = TOP[stack2] then
             counter ⟵ counter + 1
@@ -76,27 +66,36 @@ function compareStacks(word1,word2)
             break
         end if
     end while
+    return counter
 end function
 
 function surpressLength(word)
-    correctLength ⟵ 0
+    commonLength ⟵ 0
     if LENGTH(word) > 3 then
-        correctLength ⟵ 3
+        commonLength ⟵ 3
     else
-        correctLength ⟵ LENGTH[word] * 0.6
+        commonLength ⟵ LENGTH[word] * 0.6
     end if
-    return correctLength
+    return commonLength
 end function
 
 function masculineAlgorithm(word1, word2)
-    numWords ⟵ compareStacks(word1, word2)
-    word1MidLetter ⟵ word1[LENGTH[word1] - numWords]
-    word2MidLetter ⟵ word2[LENGTH[word2] - numWords]
-    if numWords ≥ surpressLength(word1) ∧ checkVowels(word1MidLetter) = checkVowels(word2MidLetter) then
+    stack1 ⟵ stackConvert(word1)
+    stack2 ⟵ stackConvert(word2)
+    numWords ⟵ compareStacks(stack1, stack2)
+    if numWords ≥ surpressLength(word1) ∧ checkVowels(TOP[stack1]) = checkVowels(TOP[stack2]) then
         return TRUE
     else
         return FALSE
     end if
+end function
+
+function arrayConvert(word)
+    new Array array(LENGTH[word])
+    for 0 < i ≤ LENGTH[word] do
+        Array ⟵ word[i]
+    end for
+    return array
 end function
 
 function getSyllable(array)
@@ -109,7 +108,7 @@ function getSyllable(array)
             if supportWord = NONE then
                 supportWord ⟵ array[i - 1]
             end if
-            if ¬checkVowels(next) then
+            if ¬checkVowels(array[i + 1]) then
                 startWord ⟵ array[i + 1]
                 break
             end if
@@ -187,6 +186,7 @@ function poetAssistant(fileName)
         else if LENGTH[userInput] < 3 then
             print "Invalid input. Make sure the word is equal or more than 3 letters long."
         end if
+        poetAssistant(fileName)
     end if
 end function
 
