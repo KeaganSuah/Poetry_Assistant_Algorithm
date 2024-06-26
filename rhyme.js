@@ -24,62 +24,59 @@ class Stack {
   }
 }
 
-// Declare the nodes for the linked list
+// Node class for linked list
 class Node {
-  // constructor
+  // Constructor to initialise node
   constructor(element) {
     this.element = element;
     this.next = null;
   }
 }
 
-// Declare the linked list data structure
+// Linked list class
 class LinkedList {
   constructor() {
     this.head = null;
     this.size = 0;
   }
 
-  // adds an element at the end of list
+  // Adds an element at the end of the list
   insertAtEnd(element) {
-    // creates a new node
-    let node = new Node(element);
+    // Create a new node
+    const node = new Node(element);
 
-    // to store current node
-    let current;
-
-    // if list is Empty add the element and make it head
-    if (this.head == null) this.head = node;
-    else {
-      current = this.head;
-
-      // iterate to the end of the list
+    // If list is empty, set new node as head
+    if (!this.head) {
+      this.head = node;
+    } else {
+      // Traverse to the end of the list
+      let current = this.head;
       while (current.next) {
         current = current.next;
       }
 
-      // add node
+      // Add new node at the end
       current.next = node;
     }
     this.size++;
   }
 
-  // checks the list for empty
+  // Checks if the list is empty
   empty() {
-    return this.size == 0;
+    return this.size === 0;
   }
 
-  // prints the list items
+  // Prints the list elements
   printList() {
-    let curr = this.head;
-    let str = "";
-    let count = 1;
-    while (curr) {
-      str += count + ". " + curr.element + "\n";
-      curr = curr.next;
-      count += 1;
+    let current = this.head;
+    let result = "";
+    let index = 1;
+    while (current) {
+      result += `${index}. ${current.element}\n`;
+      current = current.next;
+      index++;
     }
-    console.log(str);
+    console.log(result);
   }
 }
 

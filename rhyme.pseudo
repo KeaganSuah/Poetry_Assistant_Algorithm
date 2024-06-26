@@ -98,6 +98,15 @@ function arrayConvert(word)
     return array
 end function
 
+function reverseArray(word)
+    	new Array array(LENGTH[word])
+    	for LENGTH[word] ≥ i > 0 do
+        		Array ⟵ word[i]
+    	end for
+    	return array
+end function
+
+
 function getSyllable(array)
     startWord ⟵ NONE
     vowelWord ⟵ NONE
