@@ -71,8 +71,15 @@ class LinkedList {
     let current = this.head;
     let result = "";
     let index = 1;
+    let previousSyllableCount = 0;
     while (current) {
+      if (countSyllables(current.element) != previousSyllableCount) {
+        result += `Words with Syllables of ${countSyllables(
+          current.element
+        )}\n`;
+      }
       result += `${index}. ${current.element}\n`;
+      previousSyllableCount = countSyllables(current.element);
       current = current.next;
       index++;
     }
@@ -86,8 +93,8 @@ class LinkedList {
 function checkVowels(letter) {
   // Declare array of vowels
   var vowels = ["a", "e", "i", "o", "u"];
-  for (var i of vowels) {
-    if (i == letter) {
+  for (let i = 0; i < vowels.length; i++) {
+    if (vowels[i] == letter) {
       return true;
     }
   }
@@ -225,6 +232,52 @@ function assonanceAlgorithm(word1, word2) {
   }
 }
 
+//////////////////// Sort by Syllables Functions ////////////////////
+
+// Count the number of syllables in the word, including ending "y" while ignoring duplicated vowels and magic-e
+function countSyllables(word) {
+  var array = reverseArray(word);
+  var counter = 0;
+  for (let i = 0; i < array.length; i++) {
+    if (i == 0 && array[i] == "e") {
+      continue;
+    } else if (
+      array[i] == "y" ||
+      (checkVowels(array[i]) && !checkVowels(array[i + 1]))
+    ) {
+      counter += 1;
+    } else {
+      continue;
+    }
+  }
+  return counter;
+}
+
+// swap nodes' values for bubblesort in linked list
+function swapNodes(current) {
+  let temp = current.element;
+  current.element = current.next.element;
+  current.next.element = temp;
+}
+
+// Bubblesort function on linkedList
+function bubbleSort(linkedList) {
+  let swapped = true;
+  while (swapped) {
+    swapped = false;
+    let current = linkedList.head;
+    while (current != null && current.next != null) {
+      if (
+        countSyllables(current.element) > countSyllables(current.next.element)
+      ) {
+        swapNodes(current);
+        swapped = true;
+      }
+      current = current.next;
+    }
+  }
+}
+
 //////////////////// Poet Assistance Functions ////////////////////
 
 var fs = require("fs");
@@ -272,6 +325,7 @@ function getRhymeWords(fileName, userInput) {
       `\nWords that Rhyme with ${userInput}\n\nUsing Masculine Rhyme Algorithm`
     );
     if (!masculineList.empty()) {
+      bubbleSort(masculineList);
       masculineList.printList();
     } else {
       console.log(`Sorry no words rhyme with ${userInput}`);
@@ -281,6 +335,7 @@ function getRhymeWords(fileName, userInput) {
       "Additional words with Assonance (Vowel Rhyme) Rhyme Algorithm"
     );
     if (!assonanceList.empty()) {
+      bubbleSort(assonanceList);
       assonanceList.printList();
     } else {
       console.log(
@@ -298,8 +353,9 @@ function poetAssistant(fileName) {
   readline.question(
     "Enter your word to find rhyming words, or (type 'exit' to quit): ",
     (userInput) => {
+      // userInput = userInput.toLowerCase();
       // user can exit by typing the word 'exit'
-      if (userInput.toLowerCase() == "exit") {
+      if (userInput == "exit") {
         console.log("Thank you and have fun making poems!");
         readline.close();
       }

@@ -39,8 +39,8 @@ class LinkedList:
 function checkVowels(letter)
     new Array vowels(5)
     vowels ⟵ ["a", "e", "i", "o", "u"]
-    for 0 < i ≤ 5 do
-        if i = letter then
+    for 0 < i ≤ LENGTH[vowels] do
+        if vowels[i] = letter then
             return TRUE
         end if
     end for
@@ -152,6 +152,43 @@ function assonanceAlgorithm(word1, word2)
     end if
 end function
 
+function countSyllables(word)
+    array ⟵ reverseArray(word1)
+    counter ⟵ 0
+    for 0 < i ≤ LENGTH[array] do
+        if i = 0 ∧ array[i] = "e" then
+            continue
+        else if array[i] = "y" ⋁ (checkVowels(array[i])∧¬checkVowels(array[i])) then
+            counter ⟵ counter + 1
+        else
+            continue
+        end if
+    end for
+    return counter
+end function
+
+function swapNodes(current)
+    temp ⟵ ELEMENT[current]
+    ELEMENT[current] ⟵ ELEMENT[NEXT[current]]
+    ELEMENT[NEXT[current]] ⟵ temp
+end function
+
+function bubbleSort(linkedList)
+    swapped ⟵ TRUE
+    while swapped do
+        swapped ⟵ FALSE
+        current ⟵ HEAD[linkedList]
+        next ⟵ NEXT[current]
+        while current ≠ NONE ∧ next ≠ NONE do
+            if countSyllables(ELEMENT[current]) > countSyllables(ELEMENT[next]) then
+                swapNodes(current)
+                swapped ⟵ TRUE
+            end if
+            current ⟵ next
+        end while
+    end while
+end function
+
 function getRhymeWords(fileName, userInput)
     file ⟵ open(fileName)
     new Array wordList(LENGTH(file))
@@ -185,6 +222,7 @@ end function
 function poetAssistant(fileName)
     print "Enter your word to find rhyming words, or (type 'exit' to quit): "
     input userInput
+    userInput ⟵ LowerCase[userInput]
     if userInput = "exit" then
         print "Thank you and have fun making poems!"
     else if LENGTH[userInput] ≥ 3 ∧ contains only alphabetic characters then
