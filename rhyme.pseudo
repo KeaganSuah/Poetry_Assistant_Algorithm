@@ -2,7 +2,7 @@
 function checkVowels(letter)
 new Array vowels(5)
     	vowels ⟵ ["a", "e", "i", "o", "u"]
-    	for 0 < i ≤ 5 do
+    	for 0 < i ≤ LENGTH[vowels] do
         		if vowels[i] = letter then
             			return TRUE
         		end if
@@ -62,7 +62,7 @@ startWord ⟵ NONE
    	vowelWord ⟵ NONE
     	supportWord ⟵ NONE
     	for 0 < i ≤ LENGTH[array] do
-        		if checkVowels(array[i]) ∧ i  ̸= LENGTH[array] then
+        		if checkVowels(array[i]) ∧ i ≠ LENGTH[array] then
 			if ¬checkVowels(array[i - 1]) then
             				vowelWord ⟵ array[i]
 			end if
@@ -162,6 +162,7 @@ if masculineAlgorithm(input, ELEMENT[current]) < masculineAlgorithm(input, ELEME
     	end while
 end function
 
+ 
 // Get the list of words from the text file and compare it with the user input
 function getRhymeWords(fileName, userInput)
     	file ⟵ open(fileName)
