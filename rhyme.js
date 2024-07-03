@@ -67,7 +67,7 @@ class LinkedList {
   }
 
   // Prints the list elements
-  printList() {
+  printListAssonance() {
     let current = this.head;
     let result = "";
     let index = 1;
@@ -80,6 +80,27 @@ class LinkedList {
       }
       result += `${index}. ${current.element}\n`;
       previousSyllableCount = countSyllables(current.element);
+      current = current.next;
+      index++;
+    }
+    console.log(result);
+  }
+
+  // Prints the list elements
+  printListMasculine(input) {
+    let current = this.head;
+    let result = "";
+    let index = 1;
+    let previousSyllableCount = 0;
+    while (current) {
+      if (masculineAlgorithm(input, current.element) != previousSyllableCount) {
+        result += `Words with same letters of ${masculineAlgorithm(
+          input,
+          current.element
+        )}\n`;
+      }
+      result += `${index}. ${current.element}\n`;
+      previousSyllableCount = masculineAlgorithm(input, current.element);
       current = current.next;
       index++;
     }
@@ -129,30 +150,16 @@ function compareStacks(stack1, stack2) {
   return counter;
 }
 
-// If the word is longer than 3 letters, it will still return the max amount of 3, else it returns 60% of the word length
-function surpressLength(word) {
-  var commonLength = 0;
-  if (word.length > 3) {
-    commonLength = 3;
-  } else {
-    commonLength = word.length * 0.6;
-  }
-  return commonLength;
-}
-
-// Masculine rhyme algorithm, take two words and find common letters in the last syllable of both words
+// Masculine rhyme algorithm, take two words and find common letters, return the counter if rhyme, must have a minimum of 2 letters
 function masculineAlgorithm(word1, word2) {
   // Convert the argument words into a stack
   var stack1 = stackConvert(word1);
   var stack2 = stackConvert(word2);
-  // Get the counter of common letters, it satisfy if its more than the value return by surpress length
+  // Get the counter of common letters which will be return if is satisfy the condition, min of 2 letters
   var numWords = compareStacks(stack1, stack2);
   // Check to see if the remaining letters before the common letters are vowels or contanents, if both are the same, that means the word rhymes
-  if (
-    numWords >= surpressLength(word1) &&
-    checkVowels(stack1.top()) == checkVowels(stack2.top())
-  ) {
-    return true;
+  if (numWords >= 2 && checkVowels(stack1.top()) == checkVowels(stack2.top())) {
+    return numWords;
   } else {
     return false;
   }
@@ -169,32 +176,25 @@ function arrayConvert(word) {
   return array;
 }
 
-// Takes a string as an argument, convert and reverse it into a array data structure
-function reverseArray(word) {
-  var array = [];
-  for (let i = word.length - 1; i >= 0; i--) {
-    array.push(word[i]);
-  }
-  return array;
-}
-
-// Get the vowel letter, letter before and after it in the last syllable of the input word
+// Get the vowel letter, letter before and after it in the first syllable of the input word
 function getSyllable(array) {
   var startWord = null;
   var vowelWord = null;
   var supportWord = null;
-  // Interate through the word reversed array to find the vowel
+  // Interate through the word array to find the vowel
   for (var i = 0; i < array.length; i++) {
     // To find the vowel and ignore the magic 'E' at the last letter of the word
-    if (checkVowels(array[i]) && i != 0) {
-      vowelWord = array[i];
-      // only get the letter behind the vowel when it hasn't been declared yet
-      if (supportWord == null) {
-        supportWord = array[i - 1];
+    if (checkVowels(array[i]) && i != array.length - 1) {
+      if (!checkVowels(array[i - 1])) {
+        vowelWord = array[i];
       }
-      // Check to see if the letter in front of the vowel if its not a vowel, this ignore double vowels word
+      // only get the letter in front of the vowel when it hasn't been declared yet
+      if (startWord == null) {
+        startWord = array[i - 1];
+      }
+      // Check to see if the letter behind the vowel is not a vowel, this ignore double vowels word
       if (!checkVowels(array[i + 1])) {
-        startWord = array[i + 1];
+        supportWord = array[i + 1];
         break;
       }
     }
@@ -203,7 +203,7 @@ function getSyllable(array) {
   return syllableArray;
 }
 
-// Compare both arrays to see if they have matching syllable sounds, by the vowel letter, and letter in front and behind of it, using linear search
+// Compare both arrays to see if they have matching syllable sounds, by using the vowel letter, and letter in front and behind of it, using linear search
 function compareArray(array1, array2) {
   for (let i = 0; i < array2.length; i++) {
     // check if the letter is a vowel
@@ -220,9 +220,9 @@ function compareArray(array1, array2) {
   return false;
 }
 
-// assonance rhyme algorithm, take last syllable and vowel letter of input word and compare it with all syllables and vowels in comparing word. As long as one syllable is the same, it rhymes.
+// assonance rhyme algorithm, take first syllable and vowel letter of input word and compare it with all syllables and vowels in comparing word. As long as one syllable is the same, it rhymes.
 function assonanceAlgorithm(word1, word2) {
-  var array1 = reverseArray(word1);
+  var array1 = arrayConvert(word1);
   var array2 = arrayConvert(word2);
   // words shorter than 4 letters will already be picked up by masculine rhyme, so can just ignore it.
   if (word2.length >= 5 && compareArray(getSyllable(array1), array2)) {
@@ -232,17 +232,18 @@ function assonanceAlgorithm(word1, word2) {
   }
 }
 
-//////////////////// Sort by Syllables Functions ////////////////////
+//////////////////// Sorting Algorithms Functions ////////////////////
 
 // Count the number of syllables in the word, including ending "y" while ignoring duplicated vowels and magic-e
 function countSyllables(word) {
-  var array = reverseArray(word);
+  var array = arrayConvert(word);
   var counter = 0;
+  var lastIndex = array.length - 1;
   for (let i = 0; i < array.length; i++) {
-    if (i == 0 && array[i] == "e") {
+    if (i == lastIndex && array[i] == "e") {
       continue;
     } else if (
-      array[i] == "y" ||
+      (i == lastIndex && array[i] == "y") ||
       (checkVowels(array[i]) && !checkVowels(array[i + 1]))
     ) {
       counter += 1;
@@ -260,8 +261,8 @@ function swapNodes(current) {
   current.next.element = temp;
 }
 
-// Bubblesort function on linkedList
-function bubbleSort(linkedList) {
+// Bubblesort function on linkedList to sort by syllables for assonance rhyme
+function bubbleSortAssonance(linkedList) {
   let swapped = true;
   while (swapped) {
     swapped = false;
@@ -269,6 +270,25 @@ function bubbleSort(linkedList) {
     while (current != null && current.next != null) {
       if (
         countSyllables(current.element) > countSyllables(current.next.element)
+      ) {
+        swapNodes(current);
+        swapped = true;
+      }
+      current = current.next;
+    }
+  }
+}
+
+// Bubblesort function on linkedList to sort by ranking of masculine rhyme
+function bubbleSortMasculine(linkedList, input) {
+  let swapped = true;
+  while (swapped) {
+    swapped = false;
+    let current = linkedList.head;
+    while (current != null && current.next != null) {
+      if (
+        masculineAlgorithm(input, current.element) <
+        masculineAlgorithm(input, current.next.element)
       ) {
         swapNodes(current);
         swapped = true;
@@ -325,8 +345,8 @@ function getRhymeWords(fileName, userInput) {
       `\nWords that Rhyme with ${userInput}\n\nUsing Masculine Rhyme Algorithm`
     );
     if (!masculineList.empty()) {
-      bubbleSort(masculineList);
-      masculineList.printList();
+      bubbleSortMasculine(masculineList, userInput);
+      masculineList.printListMasculine(userInput);
     } else {
       console.log(`Sorry no words rhyme with ${userInput}`);
     }
@@ -335,8 +355,8 @@ function getRhymeWords(fileName, userInput) {
       "Additional words with Assonance (Vowel Rhyme) Rhyme Algorithm"
     );
     if (!assonanceList.empty()) {
-      bubbleSort(assonanceList);
-      assonanceList.printList();
+      bubbleSortAssonance(assonanceList);
+      assonanceList.printListAssonance();
     } else {
       console.log(
         `No addition words rhyme with ${userInput} using Assonance rhyme`
