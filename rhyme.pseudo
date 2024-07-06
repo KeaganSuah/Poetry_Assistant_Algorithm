@@ -1,7 +1,7 @@
 // Check if the letter in the argument is part of a vowel using a linear search
 function checkVowels(letter)
 new Array vowels(5)
-    	vowels ⟵ ["a", "e", "i", "o", "u"]
+vowels ⟵ ["a", "e", "i", "o", "u"]
     	for 0 < i ≤ LENGTH[vowels] do
         		if vowels[i] = letter then
             			return TRUE
@@ -15,7 +15,7 @@ function stackConvert(word)
     	new Stack wordStack
     	for 0 < i ≤ LENGTH[word] do
         		PUSH[word[i], wordStack]
-   	 end for
+   	end for
     	return wordStack
 end function
 
@@ -24,25 +24,25 @@ end function
 function compareStacks(stack1, stack2)
     	counter ⟵ 0
     	while ¬EMPTY[stack1] do
-if TOP[stack1] = TOP[stack2] then
-counter ⟵ counter + 1
-            			POP[stack1]
-         			POP[stack2]
+			if TOP[stack1] = TOP[stack2] then
+				counter ⟵ counter + 1
+				POP[stack1]
+				POP[stack2]
      		else
     			break
         		end if
     	end while
-   	 return counter
+   	return counter
 end function
  
 // Masculine rhyme algorithm, take two words and find common letters, return the counter if rhyme, must have a minimum of 2 letters
 function masculineAlgorithm(word1, word2)
-stack1 ⟵ stackConvert(word1)
+		stack1 ⟵ stackConvert(word1)
     	stack2 ⟵ stackConvert(word2)
     	numWords ⟵ compareStacks(stack1, stack2)
-if numWords ≥ 2 ∧ checkVowels(TOP[stack1]) = checkVowels(TOP[stack2]) then
+		if numWords ≥ 2 ∧ checkVowels(TOP[stack1]) = checkVowels(TOP[stack2]) then
         		return numWords
-   	 else
+   		else
         		return FALSE
     	end if
 end function
@@ -80,6 +80,7 @@ startWord ⟵ NONE
     	return syllableArray
 end function
 
+ 
 // Compare both arrays to see if they have matching syllable sounds, by the vowel letter, and letter in front and behind of it, using linear search
 function compareArray(array1, array2)
     	for 0 < i ≤ LENGTH[array2] do
@@ -114,15 +115,16 @@ function countSyllables(word)
     	for 0 < i ≤ LENGTH[array] do
         		if i = lastIndex ∧ array[i] = "e" then
             			continue
-else if (i = lastIndex ∧ array[i] = "y") ∨ (checkVowels(array[i]) ∧ ¬checkVowels(array[i])) then
+				else if (i = lastIndex ∧ array[i] = "y") ∨ (checkVowels(array[i]) ∧ ¬checkVowels(array[i])) then
             			counter ⟵ counter + 1
         		else
             			continue
 		end if
-   	 end for
+   	end for
 	return counter
 end function
 
+ 
 // swap nodes' values for bubblesort in linked list
 function swapNodes(current)
   	temp ⟵ ELEMENT[current]
@@ -137,7 +139,7 @@ function bubbleSortAssonance(linkedList)
        		swapped ⟵ FALSE
         		current ⟵ HEAD[linkedList]
         		while current ≠ NONE ∧ NEXT[current] ≠ NONE do
-if countSyllables(ELEMENT[current]) > countSyllables(ELEMENT[NEXT[current]]) then
+						if countSyllables(ELEMENT[current]) > countSyllables(ELEMENT[NEXT[current]]) then
                 			swapNodes(current)
                 			swapped ⟵ TRUE
             			end if
@@ -208,7 +210,7 @@ function poetAssistant(fileName)
         		if contains only alphabetic characters then
             			print "Invalid input. Make sure the word contains only English letters."
         		else if LENGTH[userInput] < 3 then
-print "Invalid input. Make sure the word is equal or more than 3 letters long."
+						print "Invalid input. Make sure the word is equal or more than 3 letters long."
         		end if
         		poetAssistant(fileName)
     	end if
