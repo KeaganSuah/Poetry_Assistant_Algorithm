@@ -4,7 +4,7 @@
 The Poetry Assistant is designed to help users discover rhymes effortlessly. By leveraging algorithms to suggest both single (masculine) and assonance rhymes, the assistant enhances creativity and speeds up the poetic writing process. The project focuses on providing accurate rhyme suggestions based on syllable structure and sorting techniques, ensuring a smooth user experience for poets and lyricists.
 
 ## YouTube Demo
-![YouTube Demo](https://www.youtube.com/watch?v=KbNYfMFjr6U)
+[YouTube Demo](https://www.youtube.com/watch?v=KbNYfMFjr6U)
 
 ## Learning and Development
 This project allowed me to deepen my understanding of advanced JavaScript concepts, data structures, and algorithmic design. Node.js was utilised to create a robust backend for rhyme generation, enabling efficient server-side processing. I designed custom rhyme-sorting algorithms and implemented stacks, arrays, and linked lists to manage rhyme data dynamically.
