@@ -30,9 +30,9 @@ This project allowed me to deepen my understanding of advanced JavaScript concep
 - The Poetry Assistant simplifies the process of finding rhymes, whether for casual writing or professional work. By harnessing the power of JavaScript and server-side processing, the project delivers accurate, fast, and intuitive rhyme suggestions. Future enhancements include expanding the algorithm for more nuanced rhyme types and improving performance for larger word datasets.
 
 ## Technologies
-JavaScript
-Node.js
-Data Structures (Stacks, Arrays, Linked Lists)
+- JavaScript
+- Node.js
+- Data Structures (Stacks, Arrays, Linked Lists)
 
 ## Contact
 For inquiries or feedback, please contact me at suahkeagan@gmail.com
