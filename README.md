@@ -38,7 +38,6 @@ This project allowed me to deepen my understanding of advanced JavaScript concep
 - Data Structures (Stacks, Arrays, Linked Lists)
 - Algorithm Design and Implementation
 - Server-side Processing
-- Problem-solving and Debugging
 
 ## Contact
 For inquiries or feedback, please contact me at suahkeagan@gmail.com
